@@ -1,0 +1,2054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math vs. Zombies: Systems of Linear Equations (Grade 8 Math)</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for Playful, Large & Legible Educational Aesthetics -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=VT323&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome CDN for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- KaTeX CDN for Mathematical Typesetting -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    
+    <script>
+        // Global KaTeX renderer function
+        function initKaTeX() {
+            if (window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="initKaTeX()"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pvz: {
+                            lawn: '#2e7d32',
+                            lawnDark: '#1b5e20',
+                            soil: '#5d4037',
+                            wood: '#8d6e63',
+                            woodDark: '#4e342e',
+                            sunYellow: '#fbc02d',
+                            peaGreen: '#7cb342',
+                            zombiePurple: '#6a1b9a',
+                            zombieSkin: '#78909c',
+                            cardBg: '#fff8e1'
+                        }
+                    },
+                    fontFamily: {
+                        game: ['Fredoka', 'sans-serif'],
+                        body: ['Plus Jakarta Sans', 'sans-serif'],
+                        pixel: ['VT323', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #122312;
+            background-image: radial-gradient(#2e7d32 18%, transparent 19%), radial-gradient(#1b5e20 18%, transparent 19%);
+            background-size: 70px 70px;
+            background-position: 0 0, 35px 35px;
+            font-size: 1.125rem; /* 18px base text size for projector/smartboard clarity */
+        }
+
+        .font-game { font-family: 'Fredoka', cursive; }
+        .font-pixel { font-family: 'VT323', monospace; }
+
+        .lawn-pattern {
+            background: repeating-linear-gradient(
+                90deg,
+                #388e3c,
+                #388e3c 80px,
+                #2e7d32 80px,
+                #2e7d32 160px
+            );
+        }
+
+        .zombie-wobble {
+            animation: wobble 2.2s ease-in-out infinite alternate;
+        }
+
+        @keyframes wobble {
+            0% { transform: rotate(-4deg) translateY(0px); }
+            100% { transform: rotate(4deg) translateY(-8px); }
+        }
+
+        .card-wood {
+            background: linear-gradient(135deg, #8d6e63 0%, #4e342e 100%);
+            border: 5px solid #2d1e18;
+            box-shadow: inset 0 2px 6px rgba(255,255,255,0.25), 0 8px 20px rgba(0,0,0,0.5);
+        }
+
+        /* Large touch and click targets */
+        button, select, input {
+            touch-action: manipulation;
+        }
+
+        /* Custom high-contrast scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1b5e20;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #fbc02d;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col justify-between selection:bg-yellow-300 selection:text-green-950">
+
+    <!-- ================================================================= -->
+    <!-- STUDENT ONBOARDING / USERNAME MODAL -->
+    <!-- ================================================================= -->
+    <div id="welcomeModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        <div class="bg-amber-50 rounded-3xl border-8 border-amber-900 max-w-lg w-full p-8 shadow-2xl space-y-6 text-center animate-scaleUp">
+            <div class="w-20 h-20 bg-yellow-400 rounded-3xl border-4 border-yellow-600 flex items-center justify-center text-4xl shadow-xl mx-auto animate-bounce">
+                🌻
+            </div>
+            <div>
+                <h2 class="font-game text-3xl md:text-4xl font-extrabold text-amber-950">Welcome, Defender!</h2>
+                <p class="text-base text-amber-800 font-medium mt-1">Grade 8 Mathematics • Systems of Linear Equations</p>
+            </div>
+
+            <form onsubmit="saveStudentProfile(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="font-game text-sm text-amber-900 font-bold block mb-1">YOUR NAME / NICKNAME:</label>
+                    <input type="text" id="initStudentName" required placeholder="e.g. Juan Dela Cruz" class="w-full bg-white border-2 border-amber-400 rounded-2xl p-3 text-lg font-bold text-slate-800 outline-none focus:border-amber-600 shadow-sm">
+                </div>
+
+                <div>
+                    <label class="font-game text-sm text-amber-900 font-bold block mb-1">GRADE & SECTION:</label>
+                    <input type="text" id="initStudentSection" placeholder="e.g. Grade 8 - Sampaguita" class="w-full bg-white border-2 border-amber-400 rounded-2xl p-3 text-lg font-bold text-slate-800 outline-none focus:border-amber-600 shadow-sm">
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 font-game text-xl py-4 rounded-2xl font-extrabold shadow-xl transition transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2">
+                    <span>🚀 START LEARNING & DEFENDING!</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <header class="bg-gradient-to-r from-green-950 via-emerald-950 to-green-950 text-white border-b-8 border-yellow-500 sticky top-0 z-50 shadow-2xl">
+        <div class="max-w-[1600px] mx-auto px-4 md:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+            
+            <!-- Brand & DepEd Title -->
+            <div class="flex items-center gap-4 cursor-pointer" onclick="switchTab('hub')">
+                <div class="w-16 h-16 bg-yellow-400 rounded-2xl border-4 border-yellow-600 flex items-center justify-center text-3xl shadow-xl animate-bounce">
+                    🌻
+                </div>
+                <div>
+                    <h1 class="font-game text-2xl md:text-4xl font-extrabold tracking-wide text-yellow-300 drop-shadow-[0_3px_3px_rgba(0,0,0,0.9)]">
+                        MATH vs. ZOMBIES
+                    </h1>
+                    <p class="text-sm md:text-base text-emerald-200 font-semibold flex items-center gap-2">
+                        <span>Grade 8 Mathematics</span>
+                        <span>•</span>
+                        <span id="headerStudentBadge" class="bg-yellow-400 text-slate-950 font-game text-xs font-bold px-2.5 py-0.5 rounded-full">Player: Guest</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Global Sun & Streak Status Bar -->
+            <div class="flex items-center gap-3 md:gap-6 font-game">
+                <div class="bg-amber-950/90 border-3 border-yellow-400 rounded-2xl px-4 py-2 flex items-center gap-3 shadow-inner">
+                    <span class="text-2xl md:text-3xl animate-spin" style="animation-duration: 8s;">☀️</span>
+                    <span id="globalSunCount" class="text-yellow-300 font-extrabold text-2xl md:text-3xl">150</span>
+                </div>
+
+                <div class="bg-emerald-950/90 border-3 border-emerald-400 rounded-2xl px-4 py-2 flex items-center gap-2">
+                    <span class="text-2xl">🔥</span>
+                    <span id="streakCounter" class="text-emerald-300 font-extrabold text-lg md:text-xl">Streak: 0</span>
+                </div>
+
+                <button id="soundToggleBtn" onclick="toggleAudio()" class="bg-emerald-800 hover:bg-emerald-700 p-3 rounded-2xl border-2 border-emerald-400 text-yellow-300 transition-transform active:scale-95 shadow-md" title="Toggle Sound FX">
+                    <i id="soundIcon" class="fas fa-volume-up text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Primary Navigation Stations -->
+            <nav class="flex items-center gap-2 md:gap-3 w-full lg:w-auto overflow-x-auto pb-2 lg:pb-0">
+                <button onclick="switchTab('hub')" id="tab-hub" class="nav-tab bg-yellow-500 text-green-950 font-game px-4 py-2.5 rounded-xl text-base font-extrabold shadow-lg hover:bg-yellow-400 transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fas fa-home text-lg"></i> 🏠 Home
+                </button>
+                <button onclick="switchTab('lessons')" id="tab-lessons" class="nav-tab bg-emerald-900 text-white font-game px-4 py-2.5 rounded-xl text-base font-extrabold shadow hover:bg-emerald-800 transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fas fa-book-open text-yellow-300"></i> 1. Lessons
+                </button>
+                <button onclick="switchTab('lab')" id="tab-lab" class="nav-tab bg-emerald-900 text-white font-game px-4 py-2.5 rounded-xl text-base font-extrabold shadow hover:bg-emerald-800 transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fas fa-flask text-teal-300"></i> 2. Practice Lab
+                </button>
+                <button onclick="switchTab('vault')" id="tab-vault" class="nav-tab bg-emerald-900 text-white font-game px-4 py-2.5 rounded-xl text-base font-extrabold shadow hover:bg-emerald-800 transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fas fa-key text-amber-300"></i> 3. Vault & Cheatsheet
+                </button>
+                <button onclick="switchTab('quiz')" id="tab-quiz" class="nav-tab bg-emerald-900 text-white font-game px-4 py-2.5 rounded-xl text-base font-extrabold shadow hover:bg-emerald-800 transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fas fa-tasks text-cyan-300"></i> 4. Quiz Challenge
+                </button>
+                <button onclick="switchTab('game')" id="tab-game" class="nav-tab bg-emerald-900 text-white font-game px-4 py-2.5 rounded-xl text-base font-extrabold shadow hover:bg-emerald-800 transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fas fa-gamepad text-yellow-300"></i> 5. Arcade Games
+                </button>
+                <button onclick="switchTab('teacher')" id="tab-teacher" class="nav-tab bg-emerald-900 text-white font-game px-4 py-2.5 rounded-xl text-base font-extrabold shadow hover:bg-emerald-800 transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fas fa-chalkboard-teacher text-amber-200"></i> 6. Teacher Portal
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-[1600px] mx-auto px-4 md:px-8 py-8 flex-grow w-full space-y-8">
+
+        <!-- ================================================================= -->
+        <!-- VIEW 0: HOME MISSION HUB (NAVIGATION LAUNCHPAD) -->
+        <!-- ================================================================= -->
+        <section id="view-hub" class="space-y-8">
+            <!-- Hero Welcome Card -->
+            <div class="card-wood rounded-3xl p-8 md:p-10 text-white flex flex-col md:flex-row justify-between items-center gap-8 shadow-2xl">
+                <div class="space-y-3 max-w-3xl">
+                    <span class="bg-yellow-400 text-slate-950 font-game text-sm md:text-base font-extrabold px-4 py-1.5 rounded-full shadow">
+                        GRADE 8 MATHEMATICS • DEPED PHILIPPINES
+                    </span>
+                    <h2 class="font-game text-3xl md:text-5xl text-yellow-300 font-extrabold leading-tight">
+                        Defend Crazy Dave's Garden with Algebra!
+                    </h2>
+                    <p class="text-base md:text-xl text-amber-100 font-medium leading-relaxed">
+                        Master systems of linear equations using <b>Substitution</b> and <b>Elimination</b>. Collect Sun ☀️, unlock plant powers, solve real-world DepEd word problems, and blast zombies!
+                    </p>
+                </div>
+                <button onclick="switchTab('lessons')" class="bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 font-game text-xl md:text-2xl font-extrabold px-8 py-5 rounded-2xl shadow-2xl transition transform hover:scale-105 active:scale-95 flex items-center gap-3">
+                    <span>🚀 START LESSON 1</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Interactive Station Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Station 1: Lessons -->
+                <div onclick="switchTab('lessons')" class="bg-white hover:bg-emerald-50 border-4 border-emerald-600 rounded-3xl p-6 shadow-xl cursor-pointer transition transform hover:-translate-y-2 space-y-3 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-4xl">📚</span>
+                            <span class="bg-emerald-200 text-emerald-950 font-game text-xs font-bold px-3 py-1 rounded-full">Station 1</span>
+                        </div>
+                        <h3 class="font-game text-2xl text-emerald-900 font-bold">Interactive Lessons</h3>
+                        <p class="text-sm text-slate-600">Step-by-step walkthroughs of Substitution & Elimination methods with KaTeX formatting and quick checkpoints.</p>
+                    </div>
+                    <span class="font-game text-emerald-700 font-bold text-base flex items-center gap-2">Explore Lessons <i class="fas fa-chevron-right text-xs"></i></span>
+                </div>
+
+                <!-- Station 2: Practice Lab -->
+                <div onclick="switchTab('lab')" class="bg-white hover:bg-teal-50 border-4 border-teal-600 rounded-3xl p-6 shadow-xl cursor-pointer transition transform hover:-translate-y-2 space-y-3 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-4xl">🧪</span>
+                            <span class="bg-teal-200 text-teal-950 font-game text-xs font-bold px-3 py-1 rounded-full">Station 2</span>
+                        </div>
+                        <h3 class="font-game text-2xl text-teal-900 font-bold">Practice Lab & Contexts</h3>
+                        <p class="text-sm text-slate-600">Solve custom linear systems step-by-step or explore real-world Philippine word problems (Jeepneys, Mangoes & Sunflowers).</p>
+                    </div>
+                    <span class="font-game text-teal-700 font-bold text-base flex items-center gap-2">Open Practice Workbench <i class="fas fa-chevron-right text-xs"></i></span>
+                </div>
+
+                <!-- Station 3: Vault & Cheatsheet -->
+                <div onclick="switchTab('vault')" class="bg-white hover:bg-amber-50 border-4 border-amber-600 rounded-3xl p-6 shadow-xl cursor-pointer transition transform hover:-translate-y-2 space-y-3 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-4xl">🔑</span>
+                            <span class="bg-amber-200 text-amber-950 font-game text-xs font-bold px-3 py-1 rounded-full">Station 3</span>
+                        </div>
+                        <h3 class="font-game text-2xl text-amber-900 font-bold">Sunflower Math Vault</h3>
+                        <p class="text-sm text-slate-600">Interactive formula cheatsheet deck covering algebraic properties, step summaries, and system solution types.</p>
+                    </div>
+                    <span class="font-game text-amber-700 font-bold text-base flex items-center gap-2">View Cheatsheet Deck <i class="fas fa-chevron-right text-xs"></i></span>
+                </div>
+
+                <!-- Station 4: Formative Quiz Challenge -->
+                <div onclick="switchTab('quiz')" class="bg-white hover:bg-cyan-50 border-4 border-cyan-600 rounded-3xl p-6 shadow-xl cursor-pointer transition transform hover:-translate-y-2 space-y-3 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-4xl">📝</span>
+                            <span class="bg-cyan-200 text-cyan-950 font-game text-xs font-bold px-3 py-1 rounded-full">Station 4</span>
+                        </div>
+                        <h3 class="font-game text-2xl text-cyan-900 font-bold">Quiz Mastery Challenge</h3>
+                        <p class="text-sm text-slate-600">Test your skills with 5 interactive DepEd alignment questions. Earn instant feedback and sun rewards!</p>
+                    </div>
+                    <span class="font-game text-cyan-700 font-bold text-base flex items-center gap-2">Take Quiz Challenge <i class="fas fa-chevron-right text-xs"></i></span>
+                </div>
+
+                <!-- Station 5: Arcade Games -->
+                <div onclick="switchTab('game')" class="bg-white hover:bg-purple-50 border-4 border-purple-600 rounded-3xl p-6 shadow-xl cursor-pointer transition transform hover:-translate-y-2 space-y-3 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-4xl">🎮</span>
+                            <span class="bg-purple-200 text-purple-950 font-game text-xs font-bold px-3 py-1 rounded-full">Station 5</span>
+                        </div>
+                        <h3 class="font-game text-2xl text-purple-900 font-bold">PvZ Arcade Defense</h3>
+                        <p class="text-sm text-slate-600">Play Lawn Defense Arcade, Intersection Target Shooter, and Crazy Dave's Taco Match to defeat zombie waves!</p>
+                    </div>
+                    <span class="font-game text-purple-700 font-bold text-base flex items-center gap-2">Play Arcade Games <i class="fas fa-chevron-right text-xs"></i></span>
+                </div>
+
+                <!-- Station 6: Teacher Assessment -->
+                <div onclick="switchTab('teacher')" class="bg-white hover:bg-yellow-50 border-4 border-yellow-600 rounded-3xl p-6 shadow-xl cursor-pointer transition transform hover:-translate-y-2 space-y-3 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-4xl">📜</span>
+                            <span class="bg-yellow-200 text-yellow-950 font-game text-xs font-bold px-3 py-1 rounded-full">Station 6</span>
+                        </div>
+                        <h3 class="font-game text-2xl text-yellow-900 font-bold">Teacher Dashboard</h3>
+                        <p class="text-sm text-slate-600">Review learning competency metrics, student performance analytics, and print DepEd Mastery Certificates.</p>
+                    </div>
+                    <span class="font-game text-yellow-700 font-bold text-base flex items-center gap-2">View Teacher Analytics <i class="fas fa-chevron-right text-xs"></i></span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- VIEW 1: LESSONS & CHECKPOINTS (SUBSTITUTION & ELIMINATION) -->
+        <!-- ================================================================= -->
+        <section id="view-lessons" class="hidden space-y-8">
+            <div class="card-wood rounded-3xl p-8 text-white flex flex-wrap justify-between items-center gap-6 shadow-2xl">
+                <div>
+                    <h2 class="font-game text-3xl md:text-4xl text-yellow-300">
+                        <i class="fas fa-book-reader mr-3"></i> Interactive Lessons: Algebraic Methods
+                    </h2>
+                    <p class="text-base md:text-lg text-amber-100 mt-1">
+                        DepEd Grade 8 Competency: Solving Systems of Linear Equations in Two Variables
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="switchLessonSubTab('sub')" id="btn-lesson-sub" class="sub-lesson-btn bg-yellow-400 text-emerald-950 font-game px-6 py-3 rounded-2xl text-base md:text-lg font-extrabold shadow-lg hover:bg-yellow-300 transition">
+                        🌱 Substitution Method
+                    </button>
+                    <button onclick="switchLessonSubTab('elim')" id="btn-lesson-elim" class="sub-lesson-btn bg-emerald-900 text-emerald-200 font-game px-6 py-3 rounded-2xl text-base md:text-lg font-extrabold shadow-lg hover:bg-emerald-800 transition">
+                        ⚔️ Elimination Method
+                    </button>
+                </div>
+            </div>
+
+            <!-- CONCEPT DISCUSSION & TOPIC INTRODUCTION CARD -->
+            <div class="bg-white p-8 rounded-3xl border-4 border-amber-600 shadow-xl space-y-6">
+                <div class="flex items-center gap-3 border-b border-amber-200 pb-4">
+                    <span class="text-4xl">💡</span>
+                    <div>
+                        <h3 class="font-game text-2xl md:text-3xl text-amber-950">Topic Concept Overview: Systems of Linear Equations</h3>
+                        <p class="text-sm md:text-base text-slate-600">Understand the fundamentals before proceeding to the step-by-step walkthroughs.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-amber-50 p-5 rounded-2xl border border-amber-200 space-y-2">
+                        <span class="font-game text-lg text-amber-900 font-bold block">1. What is a System?</span>
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            A <b>System of Linear Equations</b> consists of two or more linear equations involving the same variables (such as $x$ and $y$).
+                        </p>
+                        <div class="bg-white p-2 rounded-xl text-center font-mono text-xs text-amber-900 font-bold border">
+                            $\begin{cases} Ax + By = C \\ Dx + Ey = F \end{cases}$
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-200 space-y-2">
+                        <span class="font-game text-lg text-emerald-900 font-bold block">2. What Does "Solving" Mean?</span>
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            Solving a system means finding an ordered pair <b>$(x, y)$</b> that satisfies <b>BOTH equations at the exact same time</b> (their point of intersection).
+                        </p>
+                        <div class="bg-white p-2 rounded-xl text-center font-mono text-xs text-emerald-900 font-bold border">
+                            Point of Intersection: $(x, y)$
+                        </div>
+                    </div>
+
+                    <div class="bg-purple-50 p-5 rounded-2xl border border-purple-200 space-y-2">
+                        <span class="font-game text-lg text-purple-900 font-bold block">3. Which Method to Choose?</span>
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            <b>Substitution:</b> Best when a variable is isolated or has a coefficient of $1$ or $-1$.<br>
+                            <b>Elimination:</b> Best when coefficients align easily for addition or subtraction.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LESSON 1: SUBSTITUTION METHOD -->
+            <div id="lesson-substitution" class="space-y-8">
+                <!-- Stepper Card -->
+                <div class="bg-white p-8 rounded-3xl border-4 border-emerald-600 shadow-2xl space-y-6">
+                    <div class="flex justify-between items-center border-b pb-4">
+                        <span class="font-game text-2xl text-emerald-900 font-extrabold">
+                            <i class="fas fa-seedling text-emerald-600 mr-2"></i> Step-by-Step Guided Walkthrough
+                        </span>
+                        <span id="subStepIndicator" class="bg-emerald-100 text-emerald-900 font-game text-base font-extrabold px-4 py-2 rounded-full">
+                            Step 1 of 4
+                        </span>
+                    </div>
+
+                    <div id="subStepBox" class="bg-amber-50/80 p-6 rounded-2xl border-2 border-amber-300 min-h-[160px] flex flex-col justify-center">
+                        <!-- Injected via renderSubStep() -->
+                    </div>
+
+                    <div class="flex justify-between items-center pt-2">
+                        <button onclick="prevSubStep()" id="subPrevBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-game px-6 py-3 rounded-2xl text-base font-bold transition disabled:opacity-40">
+                            👈 Previous Step
+                        </button>
+                        <button onclick="nextSubStep()" id="subNextBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-game px-6 py-3 rounded-2xl text-base font-bold transition shadow-lg disabled:opacity-40">
+                            Next Step 👉
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Checkpoint 1 Card -->
+                <div class="bg-emerald-950 text-white p-8 rounded-3xl border-4 border-yellow-500 shadow-2xl space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-game text-2xl text-yellow-300">
+                            🛡️ Quick Checkpoint #1
+                        </h3>
+                        <span class="bg-yellow-500 text-slate-950 font-game text-base font-extrabold px-4 py-1.5 rounded-full">+25 Sun ☀️</span>
+                    </div>
+                    <p class="text-base md:text-lg text-emerald-100">
+                        Solve this mini-problem to power up your Sunflower:
+                    </p>
+
+                    <div class="bg-emerald-900 p-6 rounded-2xl border border-emerald-700 text-center font-mono text-emerald-200 text-xl space-y-1">
+                        <p>Equation 1: $y = 2x$</p>
+                        <p>Equation 2: $x + y = 12$</p>
+                    </div>
+
+                    <p class="font-game text-lg text-yellow-200">Question: What is the value of $x$?</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="checkCheckpoint(1, 4, this)" class="bg-emerald-800 hover:bg-emerald-700 p-4 rounded-2xl border border-emerald-600 font-mono font-bold text-lg text-center transition">
+                            A) $x = 4$
+                        </button>
+                        <button onclick="checkCheckpoint(1, 6, this)" class="bg-emerald-800 hover:bg-emerald-700 p-4 rounded-2xl border border-emerald-600 font-mono font-bold text-lg text-center transition">
+                            B) $x = 6$
+                        </button>
+                        <button onclick="checkCheckpoint(1, 3, this)" class="bg-emerald-800 hover:bg-emerald-700 p-4 rounded-2xl border border-emerald-600 font-mono font-bold text-lg text-center transition">
+                            C) $x = 3$
+                        </button>
+                    </div>
+
+                    <div id="chk1Feedback" class="hidden mt-4 p-4 rounded-2xl text-base font-bold text-center"></div>
+                </div>
+            </div>
+
+            <!-- LESSON 2: ELIMINATION METHOD -->
+            <div id="lesson-elimination" class="hidden space-y-8">
+                <!-- Stepper Card -->
+                <div class="bg-white p-8 rounded-3xl border-4 border-purple-600 shadow-2xl space-y-6">
+                    <div class="flex justify-between items-center border-b pb-4">
+                        <span class="font-game text-2xl text-purple-900 font-extrabold">
+                            <i class="fas fa-crosshairs text-purple-600 mr-2"></i> Step-by-Step Guided Walkthrough
+                        </span>
+                        <span id="elimStepIndicator" class="bg-purple-100 text-purple-900 font-game text-base font-extrabold px-4 py-2 rounded-full">
+                            Step 1 of 4
+                        </span>
+                    </div>
+
+                    <div id="elimStepBox" class="bg-purple-50/80 p-6 rounded-2xl border-2 border-purple-300 min-h-[160px] flex flex-col justify-center">
+                        <!-- Injected via renderElimStep() -->
+                    </div>
+
+                    <div class="flex justify-between items-center pt-2">
+                        <button onclick="prevElimStep()" id="elimPrevBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-game px-6 py-3 rounded-2xl text-base font-bold transition disabled:opacity-40">
+                            👈 Previous Step
+                        </button>
+                        <button onclick="nextElimStep()" id="elimNextBtn" class="bg-purple-600 hover:bg-purple-500 text-white font-game px-6 py-3 rounded-2xl text-base font-bold transition shadow-lg disabled:opacity-40">
+                            Next Step 👉
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Checkpoint 2 Card -->
+                <div class="bg-purple-950 text-white p-8 rounded-3xl border-4 border-yellow-500 shadow-2xl space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-game text-2xl text-yellow-300">
+                            ⚔️ Quick Checkpoint #2
+                        </h3>
+                        <span class="bg-yellow-500 text-slate-950 font-game text-base font-extrabold px-4 py-1.5 rounded-full">+25 Sun ☀️</span>
+                    </div>
+                    <p class="text-base md:text-lg text-purple-200">
+                        Solve this elimination challenge to power up your Cherry Bomb:
+                    </p>
+
+                    <div class="bg-slate-900 p-6 rounded-2xl border border-purple-700 text-center font-mono text-yellow-300 text-xl space-y-1">
+                        <p>$2x + y = 10$</p>
+                        <p>$2x - y = 6$</p>
+                    </div>
+
+                    <p class="font-game text-lg text-yellow-200">Question: What equation do you get when you ADD both equations?</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="checkCheckpoint(2, '4x=16', this)" class="bg-purple-900 hover:bg-purple-800 p-4 rounded-2xl border border-purple-600 font-mono font-bold text-lg text-center transition">
+                            A) $4x = 16$
+                        </button>
+                        <button onclick="checkCheckpoint(2, '2x=16', this)" class="bg-purple-900 hover:bg-purple-800 p-4 rounded-2xl border border-purple-600 font-mono font-bold text-lg text-center transition">
+                            B) $2x = 16$
+                        </button>
+                        <button onclick="checkCheckpoint(2, '4x=4', this)" class="bg-purple-900 hover:bg-purple-800 p-4 rounded-2xl border border-purple-600 font-mono font-bold text-lg text-center transition">
+                            C) $4x = 4$
+                        </button>
+                    </div>
+
+                    <div id="chk2Feedback" class="hidden mt-4 p-4 rounded-2xl text-base font-bold text-center"></div>
+                </div>
+            </div>
+
+            <!-- Bottom Guided Transition Banner -->
+            <div class="bg-emerald-950/80 border-3 border-emerald-400 p-6 rounded-3xl flex justify-between items-center text-white">
+                <div>
+                    <h4 class="font-game text-xl text-yellow-300">Finished the Lesson?</h4>
+                    <p class="text-sm text-emerald-200">Head over to the Practice Lab to generate step-by-step solutions for any custom system!</p>
+                </div>
+                <button onclick="switchTab('lab')" class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-game px-6 py-3 rounded-2xl font-extrabold text-base shadow-lg transition">
+                    Go to Practice Lab 👉
+                </button>
+            </div>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- VIEW 2: PRACTICE LAB & REAL-WORLD CONTEXT PROBLEM GENERATOR -->
+        <!-- ================================================================= -->
+        <section id="view-lab" class="hidden space-y-8">
+            <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-emerald-950 text-white rounded-3xl p-8 border-4 border-emerald-500 shadow-2xl flex flex-wrap justify-between items-center gap-6">
+                <div>
+                    <h2 class="font-game text-3xl md:text-4xl text-yellow-300">
+                        <i class="fas fa-flask mr-3"></i> Algebraic Fertilizer Lab & Scenario Workbench
+                    </h2>
+                    <p class="text-base text-teal-200">
+                        Solve custom systems or load Grade 8 DepEd real-world word problems!
+                    </p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <button onclick="loadSampleProblem('mango')" class="bg-amber-600 hover:bg-amber-500 text-white font-game px-4 py-2 rounded-xl text-sm font-bold shadow">
+                        🥭 Mangoes & Guavas
+                    </button>
+                    <button onclick="loadSampleProblem('jeepney')" class="bg-yellow-600 hover:bg-yellow-500 text-white font-game px-4 py-2 rounded-xl text-sm font-bold shadow">
+                        🛺 Jeepney & Tricycle Fares
+                    </button>
+                    <button onclick="loadSampleProblem('plants')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-game px-4 py-2 rounded-xl text-sm font-bold shadow">
+                        🌻 Sunflowers & Peas
+                    </button>
+                </div>
+            </div>
+
+            <!-- Workbench Cards Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Left: Linear System Inputs -->
+                <div class="lg:col-span-5 bg-amber-50 p-8 rounded-3xl border-4 border-amber-800/40 shadow-2xl space-y-6">
+                    <h3 class="font-game text-2xl text-emerald-900 border-b-2 border-amber-200 pb-3">
+                        1. System Inputs ($ax + by = c$)
+                    </h3>
+
+                    <div class="space-y-4 font-mono text-lg">
+                        <!-- Equation 1 Input -->
+                        <div class="bg-white p-4 rounded-2xl border border-amber-300 space-y-2">
+                            <span class="font-game text-sm text-amber-800 font-bold block">EQUATION 1:</span>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="eq1_a" value="2" class="w-16 text-center p-2 border-2 border-amber-400 rounded-xl font-bold text-xl">
+                                <span>$x +$</span>
+                                <input type="number" id="eq1_b" value="1" class="w-16 text-center p-2 border-2 border-amber-400 rounded-xl font-bold text-xl">
+                                <span>$y =$</span>
+                                <input type="number" id="eq1_c" value="10" class="w-20 text-center p-2 border-2 border-amber-400 rounded-xl font-bold text-xl">
+                            </div>
+                        </div>
+
+                        <!-- Equation 2 Input -->
+                        <div class="bg-white p-4 rounded-2xl border border-amber-300 space-y-2">
+                            <span class="font-game text-sm text-amber-800 font-bold block">EQUATION 2:</span>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="eq2_a" value="1" class="w-16 text-center p-2 border-2 border-amber-400 rounded-xl font-bold text-xl">
+                                <span>$x -$</span>
+                                <input type="number" id="eq2_b" value="1" class="w-16 text-center p-2 border-2 border-amber-400 rounded-xl font-bold text-xl">
+                                <span>$y =$</span>
+                                <input type="number" id="eq2_c" value="2" class="w-20 text-center p-2 border-2 border-amber-400 rounded-xl font-bold text-xl">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Method Selection -->
+                    <div>
+                        <label class="font-game text-sm text-emerald-900 font-bold block mb-2">CHOOSE SOLVING METHOD:</label>
+                        <select id="labMethodSelect" class="w-full bg-white border-2 border-emerald-600 rounded-2xl p-3 font-game text-lg text-emerald-950 font-bold shadow-sm">
+                            <option value="substitution">🌱 Substitution Method</option>
+                            <option value="elimination">⚔️ Elimination Method</option>
+                        </select>
+                    </div>
+
+                    <button onclick="generateLabSteps()" class="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-game text-xl py-4 rounded-2xl shadow-xl font-bold">
+                        <i class="fas fa-cogs mr-2"></i> Generate Step-by-Step Solution
+                    </button>
+                </div>
+
+                <!-- Right: Solution Steps Container -->
+                <div class="lg:col-span-7 bg-white p-8 rounded-3xl border-4 border-slate-200 shadow-2xl space-y-6">
+                    <h3 class="font-game text-2xl text-slate-800 border-b pb-3 flex justify-between items-center">
+                        <span>2. Scaffolded Solution Steps</span>
+                        <span id="labStatusBadge" class="text-sm bg-slate-100 text-slate-600 font-sans font-semibold px-3 py-1 rounded-full">Ready</span>
+                    </h3>
+
+                    <div id="labSolutionOutput" class="space-y-4 text-base min-h-[300px] flex flex-col justify-center items-center text-slate-500">
+                        <i class="fas fa-microscope text-5xl mb-3 text-emerald-600"></i>
+                        <p class="text-lg">Set your coefficients on the left and click "Generate Step-by-Step Solution" to begin!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- VIEW 3: SUNFLOWER MATH VAULT & FORMULA CHEATSHEET -->
+        <!-- ================================================================= -->
+        <section id="view-vault" class="hidden space-y-8">
+            <div class="card-wood rounded-3xl p-8 text-white flex flex-wrap justify-between items-center gap-6 shadow-2xl">
+                <div>
+                    <h2 class="font-game text-3xl md:text-4xl text-yellow-300">
+                        <i class="fas fa-key mr-3"></i> Sunflower Math Vault & Formula Cheatsheet
+                    </h2>
+                    <p class="text-base text-amber-100 mt-1">
+                        Quick reference rules, system classifications, and key algebraic formulas.
+                    </p>
+                </div>
+                <span class="bg-yellow-400 text-slate-950 font-game text-base font-extrabold px-4 py-2 rounded-2xl shadow">
+                    Grade 8 Core Reference
+                </span>
+            </div>
+
+            <!-- Vault Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1: Standard Form -->
+                <div class="bg-white border-4 border-emerald-600 p-6 rounded-3xl shadow-xl space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <h3 class="font-game text-2xl text-emerald-900 font-bold">Standard Form</h3>
+                        <span class="text-3xl">📐</span>
+                    </div>
+                    <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 text-center font-mono text-xl text-emerald-950">
+                        $Ax + By = C$
+                    </div>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Where $A$, $B$, and $C$ are integers (preferably $A \ge 0$). Variables $x$ and $y$ are aligned on the left side of the equation.
+                    </p>
+                </div>
+
+                <!-- Card 2: Substitution Rule -->
+                <div class="bg-white border-4 border-amber-600 p-6 rounded-3xl shadow-xl space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <h3 class="font-game text-2xl text-amber-900 font-bold">Substitution Rule</h3>
+                        <span class="text-3xl">🌱</span>
+                    </div>
+                    <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 text-center font-mono text-lg text-amber-950">
+                        $y = \text{expression in } x$
+                    </div>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Isolate one variable in one equation, then substitute that expression into the second equation to solve for a single variable.
+                    </p>
+                </div>
+
+                <!-- Card 3: Elimination Rule -->
+                <div class="bg-white border-4 border-purple-600 p-6 rounded-3xl shadow-xl space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <h3 class="font-game text-2xl text-purple-900 font-bold">Elimination Rule</h3>
+                        <span class="text-3xl">⚔️</span>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200 text-center font-mono text-lg text-purple-950">
+                        $+Ay + (-Ay) = 0$
+                    </div>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Multiply equations by constants so that coefficients of one variable are opposites, then add equations together to eliminate that variable.
+                    </p>
+                </div>
+
+                <!-- Card 4: One Solution (Consistent & Independent) -->
+                <div class="bg-white border-4 border-blue-600 p-6 rounded-3xl shadow-xl space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <h3 class="font-game text-2xl text-blue-900 font-bold">1 Solution (Intersecting)</h3>
+                        <span class="text-3xl">🎯</span>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-2xl border border-blue-200 text-center font-mono text-base text-blue-950">
+                        $\frac{a_1}{a_2} \neq \frac{b_1}{b_2}$
+                    </div>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        The lines intersect at exactly one point $(x, y)$. The system is <b>Consistent and Independent</b>.
+                    </p>
+                </div>
+
+                <!-- Card 5: No Solution (Parallel Lines) -->
+                <div class="bg-white border-4 border-red-600 p-6 rounded-3xl shadow-xl space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <h3 class="font-game text-2xl text-red-900 font-bold">No Solution (Parallel)</h3>
+                        <span class="text-3xl">🚫</span>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded-2xl border border-red-200 text-center font-mono text-base text-red-950">
+                        $\frac{a_1}{a_2} = \frac{b_1}{b_2} \neq \frac{c_1}{c_2}$
+                    </div>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        The lines are parallel and never meet. The system is <b>Inconsistent</b>.
+                    </p>
+                </div>
+
+                <!-- Card 6: Infinitely Many Solutions (Coincident Lines) -->
+                <div class="bg-white border-4 border-cyan-600 p-6 rounded-3xl shadow-xl space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <h3 class="font-game text-2xl text-cyan-900 font-bold">Infinite Solutions</h3>
+                        <span class="text-3xl">♾️</span>
+                    </div>
+                    <div class="bg-cyan-50 p-4 rounded-2xl border border-cyan-200 text-center font-mono text-base text-cyan-950">
+                        $\frac{a_1}{a_2} = \frac{b_1}{b_2} = \frac{c_1}{c_2}$
+                    </div>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        The lines overlap completely (same line). The system is <b>Consistent and Dependent</b>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- VIEW 4: FORMATIVE MASTERY QUIZ CHALLENGE -->
+        <!-- ================================================================= -->
+        <section id="view-quiz" class="hidden space-y-8">
+            <div class="card-wood rounded-3xl p-8 text-white flex flex-wrap justify-between items-center gap-6 shadow-2xl">
+                <div>
+                    <h2 class="font-game text-3xl md:text-4xl text-yellow-300">
+                        <i class="fas fa-tasks mr-3"></i> Quiz Mastery Challenge
+                    </h2>
+                    <p class="text-base text-amber-100 mt-1">
+                        Test your linear system solving skills! Earn +50 Sun ☀️ for every correct answer.
+                    </p>
+                </div>
+                <div class="bg-emerald-950/80 border-2 border-emerald-400 rounded-2xl px-5 py-2 font-game text-lg text-emerald-300">
+                    Quiz Score: <span id="quizScoreText" class="text-yellow-300 font-extrabold">0 / 5</span>
+                </div>
+            </div>
+
+            <!-- Active Quiz Card Container -->
+            <div id="quizContainer" class="bg-white border-4 border-cyan-600 p-8 rounded-3xl shadow-2xl space-y-6">
+                <!-- Injected via renderQuizQuestion() -->
+            </div>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- VIEW 5: ARCADE GAMES LOBBY (PvZ LAWN DEFENSE, TARGET SHOOTER, TACO MATCH) -->
+        <!-- ================================================================= -->
+        <section id="view-game" class="hidden space-y-6">
+            <!-- Game Sub-Tab Navigation -->
+            <div class="bg-emerald-950/90 border-3 border-yellow-500 rounded-3xl p-3 flex flex-wrap justify-center gap-3 shadow-xl">
+                <button onclick="switchGameMode('defense')" id="subgame-btn-defense" class="game-sub-tab bg-yellow-500 text-slate-950 font-game px-6 py-3 rounded-2xl text-base font-extrabold shadow transition flex items-center gap-2">
+                    🛡️ Lawn Defense Arcade
+                </button>
+                <button onclick="switchGameMode('grapher')" id="subgame-btn-grapher" class="game-sub-tab bg-emerald-900 text-emerald-200 font-game px-6 py-3 rounded-2xl text-base font-extrabold shadow hover:bg-emerald-800 transition flex items-center gap-2">
+                    🎯 Intersection Target Shooter
+                </button>
+                <button onclick="switchGameMode('match')" id="subgame-btn-match" class="game-sub-tab bg-emerald-900 text-emerald-200 font-game px-6 py-3 rounded-2xl text-base font-extrabold shadow hover:bg-emerald-800 transition flex items-center gap-2">
+                    🌮 Crazy Dave's Taco Match
+                </button>
+            </div>
+
+            <!-- GAME MODE 1: LAWN DEFENSE ARCADE -->
+            <div id="subgame-defense" class="space-y-6">
+                <div class="card-wood rounded-3xl p-6 text-white flex flex-wrap justify-between items-center gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-yellow-500 text-slate-900 font-game font-extrabold px-4 py-2 rounded-2xl text-base md:text-lg shadow">
+                            Level <span id="gameLevelNum">1</span>: Lawn Defense
+                        </div>
+                        <div class="text-sm md:text-base text-yellow-200 font-medium hidden md:block">
+                            Solve linear systems to shoot peas, frost beams, and cherry blasts!
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-4 font-game">
+                        <div class="bg-red-950/90 border border-red-500 rounded-xl px-4 py-2 text-sm">
+                            Zombies Remaining: <span id="zombiesLeftText" class="text-red-400 font-extrabold text-lg">5</span>
+                        </div>
+                        <button onclick="startWave()" id="startWaveBtn" class="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-400 hover:to-amber-400 text-slate-950 px-6 py-2.5 rounded-2xl font-extrabold text-base shadow-lg transition active:scale-95 animate-pulse">
+                            <i class="fas fa-play mr-2"></i> Start Wave
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Lawn Grid -->
+                <div class="relative bg-emerald-800 rounded-3xl border-8 border-amber-900 shadow-2xl p-4 overflow-hidden">
+                    <div class="lawn-pattern rounded-2xl border-4 border-emerald-950 grid grid-rows-5 gap-2 p-3 relative min-h-[420px] md:min-h-[500px]" id="lawnGrid">
+                        <div id="gameCanvasContainer" class="absolute inset-0 pointer-events-none z-10"></div>
+                    </div>
+
+                    <!-- Plant Seed Bank Arsenal -->
+                    <div class="mt-4 bg-amber-950 border-3 border-amber-700 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-3 overflow-x-auto pb-2 max-w-full">
+                            <span class="font-game text-sm text-amber-200 font-extrabold whitespace-nowrap">PLANT ARSENAL:</span>
+                            
+                            <div onclick="selectPlantCard('peashooter')" id="card-peashooter" class="plant-card cursor-pointer bg-amber-100 hover:bg-yellow-200 border-2 border-amber-800 rounded-xl p-2 w-24 text-center transition shadow-md relative group flex-shrink-0">
+                                <span class="text-3xl block">🌱</span>
+                                <span class="font-game text-xs text-emerald-950 font-bold block">Pea Shooter</span>
+                                <span class="font-game text-[10px] text-emerald-800 font-semibold block">Twin Plasma</span>
+                                <span class="font-game text-xs text-amber-800 font-extrabold block">50 ☀️</span>
+                            </div>
+
+                            <div onclick="selectPlantCard('sunflower')" id="card-sunflower" class="plant-card cursor-pointer bg-amber-100 hover:bg-yellow-200 border-2 border-amber-800 rounded-xl p-2 w-24 text-center transition shadow-md relative group flex-shrink-0">
+                                <span class="text-3xl block">🌻</span>
+                                <span class="font-game text-xs text-emerald-950 font-bold block">Sunflower</span>
+                                <span class="font-game text-[10px] text-amber-800 font-semibold block">Sun & Beam</span>
+                                <span class="font-game text-xs text-amber-800 font-extrabold block">25 ☀️</span>
+                            </div>
+
+                            <div onclick="selectPlantCard('cherry')" id="card-cherry" class="plant-card cursor-pointer bg-amber-100 hover:bg-yellow-200 border-2 border-amber-800 rounded-xl p-2 w-24 text-center transition shadow-md relative group flex-shrink-0">
+                                <span class="text-3xl block">🍒</span>
+                                <span class="font-game text-xs text-emerald-950 font-bold block">Cherry Bomb</span>
+                                <span class="font-game text-[10px] text-red-700 font-semibold block">Row AOE Blast</span>
+                                <span class="font-game text-xs text-amber-800 font-extrabold block">100 ☀️</span>
+                            </div>
+
+                            <div onclick="selectPlantCard('wallnut')" id="card-wallnut" class="plant-card cursor-pointer bg-amber-100 hover:bg-yellow-200 border-2 border-amber-800 rounded-xl p-2 w-24 text-center transition shadow-md relative group flex-shrink-0">
+                                <span class="text-3xl block">🥔</span>
+                                <span class="font-game text-xs text-emerald-950 font-bold block">Wall-nut</span>
+                                <span class="font-game text-[10px] text-amber-900 font-semibold block">+15s Shield</span>
+                                <span class="font-game text-xs text-amber-800 font-extrabold block">75 ☀️</span>
+                            </div>
+
+                            <div onclick="selectPlantCard('snowpea')" id="card-snowpea" class="plant-card cursor-pointer bg-amber-100 hover:bg-yellow-200 border-2 border-amber-800 rounded-xl p-2 w-24 text-center transition shadow-md relative group flex-shrink-0">
+                                <span class="text-3xl block">❄️</span>
+                                <span class="font-game text-xs text-emerald-950 font-bold block">Snow Pea</span>
+                                <span class="font-game text-[10px] text-blue-700 font-semibold block">Ice Freeze</span>
+                                <span class="font-game text-xs text-amber-800 font-extrabold block">75 ☀️</span>
+                            </div>
+                        </div>
+
+                        <div class="text-sm font-game text-amber-200 hidden lg:block">
+                            Select a seed card, then tap a lawn tile to plant your defenders!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAME MODE 2: INTERSECTION TARGET SHOOTER -->
+            <div id="subgame-grapher" class="hidden space-y-6">
+                <div class="card-wood rounded-3xl p-6 text-white flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <h3 class="font-game text-2xl text-yellow-300">🎯 Intersection Point Target Shooter</h3>
+                        <p class="text-sm text-amber-100">Find where the two linear equations intersect on the coordinate plane and blast the Zombie!</p>
+                    </div>
+                    <button onclick="initGrapherGame()" class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-game px-5 py-2 rounded-2xl font-extrabold text-base shadow">
+                        <i class="fas fa-sync-alt mr-2"></i> New Target
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 bg-slate-900 border-4 border-amber-900 p-6 rounded-3xl">
+                    <!-- Target Inputs -->
+                    <div class="lg:col-span-5 space-y-6 text-white">
+                        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-3">
+                            <span class="font-game text-yellow-300 text-base font-bold block">TARGET EQUATIONS:</span>
+                            <div class="font-mono text-lg bg-slate-950 p-4 rounded-xl border border-yellow-500/40 text-center space-y-2">
+                                <p id="grapherEq1" class="text-emerald-300">Line 1: $y = x + 1$</p>
+                                <p id="grapherEq2" class="text-yellow-300">Line 2: $y = -x + 5$</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 space-y-4">
+                            <span class="font-game text-sm text-amber-300 font-bold block">TARGET CROSSHAIR COORDINATES:</span>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-sm text-slate-300 block font-bold mb-1">Target X Coordinate:</label>
+                                    <input type="number" id="grapherTargetX" value="0" class="w-full bg-slate-950 border-2 border-slate-600 rounded-xl p-3 text-center text-yellow-300 font-bold text-xl">
+                                </div>
+                                <div>
+                                    <label class="text-sm text-slate-300 block font-bold mb-1">Target Y Coordinate:</label>
+                                    <input type="number" id="grapherTargetY" value="0" class="w-full bg-slate-950 border-2 border-slate-600 rounded-xl p-3 text-center text-yellow-300 font-bold text-xl">
+                                </div>
+                            </div>
+                            <button onclick="fireGrapherLaser()" class="w-full bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 font-game text-white text-xl py-4 rounded-2xl shadow-xl font-bold">
+                                🚀 FIRE TARGET LASER!
+                            </button>
+                        </div>
+
+                        <div id="grapherFeedback" class="hidden p-4 rounded-2xl text-center text-sm font-bold"></div>
+                    </div>
+
+                    <!-- Coordinate Grid -->
+                    <div class="lg:col-span-7 bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col items-center justify-center">
+                        <span class="text-sm text-slate-400 font-mono mb-3">Click any grid cell $(X, Y)$ to align target laser</span>
+                        <div id="coordinateGrid" class="grid grid-cols-11 grid-rows-11 gap-1 w-full max-w-[420px] aspect-square bg-slate-900 border-2 border-emerald-500/50 rounded-2xl p-2 relative">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAME MODE 3: CRAZY DAVE'S TACO MATCH -->
+            <div id="subgame-match" class="hidden space-y-6">
+                <div class="card-wood rounded-3xl p-6 text-white flex flex-wrap justify-between items-center gap-4">
+                    <div class="flex items-center gap-4">
+                        <span class="text-4xl">🌮</span>
+                        <div>
+                            <h3 class="font-game text-2xl text-yellow-300">Crazy Dave's Taco Match</h3>
+                            <p class="text-sm text-amber-100">Match Linear Systems with their correct Solution Coordinates $(x, y)$!</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 font-game">
+                        <span class="bg-amber-900 px-4 py-2 rounded-2xl text-sm text-yellow-300">Tacos Collected: <span id="tacoCount" class="font-extrabold text-lg">0</span> 🌮</span>
+                        <button onclick="initTacoMatchGame()" class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 px-4 py-2 rounded-2xl font-bold text-sm shadow">
+                            Reset Grid
+                        </button>
+                    </div>
+                </div>
+
+                <div id="tacoGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-amber-950 border-4 border-amber-800 p-6 rounded-3xl min-h-[360px]">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- MATH BATTLE MODAL (TRIGGERS WHEN ZOMBIE ATTACKS) -->
+        <!-- ================================================================= -->
+        <div id="mathBattleModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-amber-50 rounded-3xl border-8 border-amber-900 max-w-xl w-full p-8 shadow-2xl space-y-6 relative animate-scaleUp">
+                <div class="flex items-center justify-between border-b-2 border-amber-300 pb-4">
+                    <div class="flex items-center gap-3">
+                        <span id="zombieModalIcon" class="text-4xl">🧟</span>
+                        <div>
+                            <h3 id="zombieModalTitle" class="font-game text-2xl md:text-3xl text-purple-950">Zombie Approaching!</h3>
+                            <p class="text-sm text-purple-800 font-medium">Solve the system of equations to blast the zombie!</p>
+                        </div>
+                    </div>
+                    <span id="battleTimer" class="bg-red-600 text-white font-pixel text-2xl px-3 py-1 rounded-xl border border-red-800 shadow">30s</span>
+                </div>
+
+                <div id="activePlantPowerBanner" class="bg-emerald-100 border border-emerald-400 p-3 rounded-2xl text-sm font-bold text-emerald-950 flex items-center justify-between shadow-sm">
+                    <span id="activePlantPowerText">🌱 Lane Power: Basic Pea Cannon</span>
+                </div>
+
+                <div class="bg-slate-900 text-yellow-300 rounded-2xl p-6 text-center font-mono text-2xl shadow-inner border-3 border-amber-600 space-y-2">
+                    <p id="battleEq1">$2x + y = 10$</p>
+                    <p id="battleEq2">$x - y = 2$</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-2xl border-2 border-emerald-500 shadow-sm">
+                        <label class="font-game text-sm text-emerald-900 font-bold block mb-1">VALUE OF X:</label>
+                        <input type="number" id="battleInputX" placeholder="e.g. 4" class="w-full text-center text-2xl font-bold border-2 border-slate-300 rounded-xl p-2 focus:border-emerald-600 outline-none">
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl border-2 border-emerald-500 shadow-sm">
+                        <label class="font-game text-sm text-emerald-900 font-bold block mb-1">VALUE OF Y:</label>
+                        <input type="number" id="battleInputY" placeholder="e.g. 2" class="w-full text-center text-2xl font-bold border-2 border-slate-300 rounded-xl p-2 focus:border-emerald-600 outline-none">
+                    </div>
+                </div>
+
+                <div class="bg-yellow-100 rounded-2xl p-4 text-sm text-amber-900 border border-yellow-300">
+                    <button onclick="toggleBattleHint()" class="font-game text-amber-900 font-bold hover:underline flex items-center justify-between w-full text-base">
+                        <span><i class="fas fa-lightbulb text-yellow-600 mr-2"></i> Need Crazy Dave's Hint?</span>
+                        <i id="hintChevron" class="fas fa-chevron-down"></i>
+                    </button>
+                    <p id="battleHintText" class="hidden mt-3 pt-3 border-t border-amber-200/80 font-medium italic">
+                        Try adding both equations together! $+y$ and $-y$ will eliminate each other!
+                    </p>
+                </div>
+
+                <div class="flex gap-4 pt-2">
+                    <button onclick="submitBattleAnswer()" class="flex-1 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-game text-xl py-4 rounded-2xl shadow-xl font-bold transition active:scale-95">
+                        🌱 FIRE PEA CANNON!
+                    </button>
+                </div>
+
+                <div id="battleFeedback" class="hidden p-3 rounded-2xl text-center font-bold text-sm"></div>
+            </div>
+        </div>
+
+
+        <!-- ================================================================= -->
+        <!-- VIEW 6: TEACHER PORTAL & ASSESSMENT REPORT -->
+        <!-- ================================================================= -->
+        <section id="view-teacher" class="hidden space-y-8">
+            <div class="card-wood rounded-3xl p-8 text-white flex flex-wrap justify-between items-center gap-6 shadow-2xl">
+                <div>
+                    <h2 class="font-game text-3xl md:text-4xl text-yellow-300">
+                        <i class="fas fa-chalkboard-teacher mr-3"></i> Teacher & Assessment Dashboard
+                    </h2>
+                    <p class="text-amber-100 text-base">
+                        DepEd Grade 8 Competency Metrics, Student Analytics, and Official Printable Certificates.
+                    </p>
+                </div>
+                <button onclick="window.print()" class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-game px-6 py-3 rounded-2xl text-base font-extrabold shadow-lg flex items-center gap-2">
+                    <i class="fas fa-print"></i> Print Report / Certificate
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Left: Competencies & Performance -->
+                <div class="lg:col-span-7 space-y-8">
+                    <div class="bg-white p-8 rounded-3xl border-4 border-slate-200 shadow-xl space-y-6">
+                        <h3 class="font-game text-2xl text-emerald-900 border-b pb-3">
+                            <i class="fas fa-list-check text-emerald-600 mr-2"></i> DepEd Learning Competencies Alignment
+                        </h3>
+
+                        <div class="space-y-4 text-base">
+                            <div class="flex items-start gap-4 p-4 bg-emerald-50 rounded-2xl border border-emerald-200">
+                                <i class="fas fa-check-circle text-emerald-600 text-2xl mt-0.5"></i>
+                                <div>
+                                    <p class="font-bold text-emerald-950">M8AL-Ih-1: Solves systems of linear equations in two variables by substitution.</p>
+                                    <p class="text-sm text-emerald-700">Demonstrated via Lesson 1, Practice Lab & Peashooter/Sunflower Attacks.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4 p-4 bg-emerald-50 rounded-2xl border border-emerald-200">
+                                <i class="fas fa-check-circle text-emerald-600 text-2xl mt-0.5"></i>
+                                <div>
+                                    <p class="font-bold text-emerald-950">M8AL-Ih-2: Solves systems of linear equations in two variables by elimination.</p>
+                                    <p class="text-sm text-emerald-700">Demonstrated via Lesson 2, Practice Lab & Cherry Bomb Attacks.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 p-8 rounded-3xl border-4 border-amber-800/40 shadow-xl space-y-6">
+                        <h3 class="font-game text-2xl text-amber-950 border-b border-amber-200 pb-3">
+                            <i class="fas fa-chart-line text-amber-700 mr-2"></i> Student Metrics Summary
+                        </h3>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            <div class="bg-white p-4 rounded-2xl border border-amber-300">
+                                <span class="text-xs text-slate-500 font-bold block">TOTAL SUN</span>
+                                <span id="repTotalSun" class="font-game text-3xl text-yellow-600">150</span>
+                            </div>
+                            <div class="bg-white p-4 rounded-2xl border border-amber-300">
+                                <span class="text-xs text-slate-500 font-bold block">ACCURACY</span>
+                                <span id="repAccuracy" class="font-game text-3xl text-emerald-600">100%</span>
+                            </div>
+                            <div class="bg-white p-4 rounded-2xl border border-amber-300">
+                                <span class="text-xs text-slate-500 font-bold block">SOLVED SYSTEMS</span>
+                                <span id="repSolvedCount" class="font-game text-3xl text-blue-600">0</span>
+                            </div>
+                            <div class="bg-white p-4 rounded-2xl border border-amber-300">
+                                <span class="text-xs text-slate-500 font-bold block">WAVES CLEARED</span>
+                                <span id="repWavesCleared" class="font-game text-3xl text-purple-600">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Printable Certificate -->
+                <div class="lg:col-span-5 bg-white p-8 rounded-3xl border-8 border-yellow-500 shadow-2xl text-center space-y-6">
+                    <div class="border-4 border-dashed border-amber-800 p-8 rounded-2xl space-y-4 bg-amber-50/60">
+                        <span class="text-5xl block">🌻📜🧟</span>
+                        <h3 class="font-game text-3xl text-amber-900">CERTIFICATE OF MASTERY</h3>
+                        <p class="text-xs text-slate-600 uppercase tracking-widest font-bold">Systems of Linear Equations</p>
+
+                        <div class="my-6">
+                            <p class="text-sm text-slate-500">This certifies that Grade 8 Student:</p>
+                            <input type="text" id="studentNameInput" value="Juan Dela Cruz" class="w-full text-center font-game text-2xl text-emerald-900 border-b-2 border-emerald-600 bg-transparent py-2 focus:outline-none">
+                        </div>
+
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            Has successfully defended Crazy Dave's garden against zombie invasions by mastering both <b>Substitution</b> and <b>Elimination</b> algebraic methods.
+                        </p>
+
+                        <div class="pt-6 border-t border-amber-300 flex justify-between items-end text-left text-xs text-slate-600 font-mono">
+                            <div>
+                                <p>Grade: Grade 8 Mathematics</p>
+                                <p>Date: <span id="certDate">August 2026</span></p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold text-emerald-800">DepEd Math Defender</p>
+                                <p>Status: VERIFIED MASTER</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-green-950 text-emerald-400 py-4 text-center text-sm border-t-4 border-yellow-500">
+        <p>Designed for Grade 8 Mathematics • Aligned with DepEd K to 12 Curriculum Philippines</p>
+    </footer>
+
+
+    <!-- ================================================================= -->
+    <!-- JAVASCRIPT ENGINE & LOGIC -->
+    <!-- ================================================================= -->
+    <script>
+        // --- GLOBAL APP STATE ---
+        const state = {
+            studentName: 'Juan Dela Cruz',
+            studentSection: 'Grade 8 - Sampaguita',
+            sun: 150,
+            streak: 0,
+            solvedCount: 0,
+            incorrectCount: 0,
+            wavesCleared: 0,
+            soundEnabled: true,
+            currentTab: 'hub',
+            currentLessonSub: 'sub',
+            currentGameSub: 'defense',
+            subStepIndex: 0,
+            elimStepIndex: 0,
+            activePlantCard: 'peashooter',
+            gameActive: false,
+            zombiesRemaining: 5,
+            activeBattleZombie: null,
+            battleTimeLeft: 30,
+            battleTimerInterval: null,
+            sunProducerInterval: null,
+            // Grapher game state
+            grapherTargetX: 2,
+            grapherTargetY: 3,
+            // Taco match game state
+            tacosCollected: 0,
+            tacoCards: [],
+            flippedCards: [],
+            // Quiz state
+            quizIndex: 0,
+            quizScore: 0
+        };
+
+        function saveStudentProfile(e) {
+            e.preventDefault();
+            playSound('pop');
+            const nameInput = document.getElementById('initStudentName').value.trim();
+            const secInput = document.getElementById('initStudentSection').value.trim();
+
+            if (nameInput) state.studentName = nameInput;
+            if (secInput) state.studentSection = secInput;
+
+            document.getElementById('headerStudentBadge').textContent = `Player: ${state.studentName}`;
+            document.getElementById('studentNameInput').value = state.studentName;
+
+            document.getElementById('welcomeModal').classList.add('hidden');
+        }
+
+        // --- WEB AUDIO SYNTHESIZER ---
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (!state.soundEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'pop') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now);
+                osc.stop(now + 0.1);
+            } else if (type === 'correct') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(783.99, now + 0.2);
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.setValueAtTime(140, now + 0.15);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'sun') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            }
+        }
+
+        function toggleAudio() {
+            state.soundEnabled = !state.soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            if (state.soundEnabled) {
+                icon.className = 'fas fa-volume-up text-xl';
+                playSound('pop');
+            } else {
+                icon.className = 'fas fa-volume-mute text-xl text-red-400';
+            }
+        }
+
+        function switchTab(tabId) {
+            playSound('pop');
+            state.currentTab = tabId;
+
+            // Hide all sections
+            ['hub', 'lessons', 'lab', 'vault', 'quiz', 'game', 'teacher'].forEach(id => {
+                const el = document.getElementById(`view-${id}`);
+                const btn = document.getElementById(`tab-${id}`);
+                if (el) el.classList.add('hidden');
+                if (btn) btn.className = 'nav-tab bg-emerald-900 text-white font-game px-4 py-2.5 rounded-xl text-base font-extrabold shadow hover:bg-emerald-800 transition flex items-center gap-2 whitespace-nowrap';
+            });
+
+            // Show active section
+            const activeEl = document.getElementById(`view-${tabId}`);
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            if (activeEl) activeEl.classList.remove('hidden');
+            if (activeBtn) activeBtn.className = 'nav-tab bg-yellow-500 text-green-950 font-game px-4 py-2.5 rounded-xl text-base font-extrabold shadow-lg hover:bg-yellow-400 transition flex items-center gap-2 whitespace-nowrap';
+
+            if (tabId === 'game') {
+                if (state.currentGameSub === 'grapher') initGrapherGame();
+                if (state.currentGameSub === 'match') initTacoMatchGame();
+            }
+
+            if (tabId === 'quiz') {
+                renderQuizQuestion();
+            }
+
+            if (tabId === 'teacher') {
+                updateTeacherReport();
+            }
+
+            initKaTeX();
+        }
+
+        const subLessonSteps = [
+            {
+                step: 1,
+                title: "1. Identify the isolated variable equation",
+                content: "Look at the system:<br><span class='font-mono font-bold text-emerald-800'>Eq (1): $y = 2x + 1$</span><br><span class='font-mono font-bold text-emerald-800'>Eq (2): $3x + y = 11$</span><br>Equation (1) is already solved for $y$!"
+            },
+            {
+                step: 2,
+                title: "2. Substitute the expression into Eq (2)",
+                content: "Replace $y$ in Eq (2) with <span class='bg-yellow-200 px-2 py-0.5 rounded font-mono font-bold'>$(2x + 1)$</span>:<br><span class='font-mono font-bold text-blue-800'>$3x + (2x + 1) = 11$</span>"
+            },
+            {
+                step: 3,
+                title: "3. Simplify and solve for X",
+                content: "Combine like terms:<br><span class='font-mono font-bold'>$5x + 1 = 11 \\implies 5x = 10 \\implies x = 2$</span>"
+            },
+            {
+                step: 4,
+                title: "4. Back-substitute to find Y",
+                content: "Plug $x = 2$ back into Eq (1):<br><span class='font-mono font-bold text-emerald-800'>$y = 2(2) + 1 \\implies y = 5$</span><br><b>Solution: $(x, y) = (2, 5)$</b> 🎉"
+            }
+        ];
+
+        const elimLessonSteps = [
+            {
+                step: 1,
+                title: "1. Line up equations in standard form",
+                content: "Arrange equations so $x$ and $y$ align:<br><span class='font-mono font-bold text-purple-900'>Eq (1): $3x + 2y = 16$</span><br><span class='font-mono font-bold text-purple-900'>Eq (2): $5x - 2y = 8$</span>"
+            },
+            {
+                step: 2,
+                title: "2. Check coefficients of target variable",
+                content: "Notice the $y$ terms: <span class='bg-purple-200 px-2 py-0.5 rounded font-mono font-bold'>$+2y$</span> and <span class='bg-purple-200 px-2 py-0.5 rounded font-mono font-bold'>$-2y$</span>. They are exact opposites! Adding them eliminates $y$."
+            },
+            {
+                step: 3,
+                title: "3. Add equations together to eliminate Y",
+                content: "Add both equations:<br><span class='font-mono font-bold'>$(3x + 5x) + (2y - 2y) = 16 + 8$</span><br><span class='font-mono font-bold text-emerald-700'>$8x = 24 \\implies x = 3$</span>"
+            },
+            {
+                step: 4,
+                title: "4. Back-substitute to find Y",
+                content: "Plug $x = 3$ into Eq (1):<br><span class='font-mono font-bold'>$3(3) + 2y = 16 \\implies 9 + 2y = 16 \\implies 2y = 7 \\implies y = 3.5$</span><br><b>Solution: $(x, y) = (3, 3.5)$</b> 🍒"
+            }
+        ];
+
+        function renderSubStep() {
+            const data = subLessonSteps[state.subStepIndex];
+            const indicator = document.getElementById('subStepIndicator');
+            const box = document.getElementById('subStepBox');
+            const prevBtn = document.getElementById('subPrevBtn');
+            const nextBtn = document.getElementById('subNextBtn');
+
+            if (indicator) indicator.textContent = `Step ${data.step} of 4`;
+            if (box) {
+                box.innerHTML = `
+                    <h4 class="font-game text-xl text-emerald-900 font-bold mb-2">${data.title}</h4>
+                    <div class="text-base md:text-lg text-slate-800 leading-relaxed">${data.content}</div>
+                `;
+            }
+            if (prevBtn) prevBtn.disabled = state.subStepIndex === 0;
+            if (nextBtn) nextBtn.disabled = state.subStepIndex === subLessonSteps.length - 1;
+            initKaTeX();
+        }
+
+        function renderElimStep() {
+            const data = elimLessonSteps[state.elimStepIndex];
+            const indicator = document.getElementById('elimStepIndicator');
+            const box = document.getElementById('elimStepBox');
+            const prevBtn = document.getElementById('elimPrevBtn');
+            const nextBtn = document.getElementById('elimNextBtn');
+
+            if (indicator) indicator.textContent = `Step ${data.step} of 4`;
+            if (box) {
+                box.innerHTML = `
+                    <h4 class="font-game text-xl text-purple-900 font-bold mb-2">${data.title}</h4>
+                    <div class="text-base md:text-lg text-slate-800 leading-relaxed">${data.content}</div>
+                `;
+            }
+            if (prevBtn) prevBtn.disabled = state.elimStepIndex === 0;
+            if (nextBtn) nextBtn.disabled = state.elimStepIndex === elimLessonSteps.length - 1;
+            initKaTeX();
+        }
+
+        function nextSubStep() {
+            if (state.subStepIndex < subLessonSteps.length - 1) {
+                state.subStepIndex++;
+                playSound('pop');
+                renderSubStep();
+            }
+        }
+
+        function prevSubStep() {
+            if (state.subStepIndex > 0) {
+                state.subStepIndex--;
+                playSound('pop');
+                renderSubStep();
+            }
+        }
+
+        function nextElimStep() {
+            if (state.elimStepIndex < elimLessonSteps.length - 1) {
+                state.elimStepIndex++;
+                playSound('pop');
+                renderElimStep();
+            }
+        }
+
+        function prevElimStep() {
+            if (state.elimStepIndex > 0) {
+                state.elimStepIndex--;
+                playSound('pop');
+                renderElimStep();
+            }
+        }
+
+        function switchLessonSubTab(subId) {
+            playSound('pop');
+            state.currentLessonSub = subId;
+
+            if (subId === 'sub') {
+                document.getElementById('lesson-substitution').classList.remove('hidden');
+                document.getElementById('lesson-elimination').classList.add('hidden');
+                document.getElementById('btn-lesson-sub').className = 'sub-lesson-btn bg-yellow-400 text-emerald-950 font-game px-6 py-3 rounded-2xl text-base md:text-lg font-extrabold shadow-lg hover:bg-yellow-300 transition';
+                document.getElementById('btn-lesson-elim').className = 'sub-lesson-btn bg-emerald-900 text-emerald-200 font-game px-6 py-3 rounded-2xl text-base md:text-lg font-extrabold shadow-lg hover:bg-emerald-800 transition';
+            } else {
+                document.getElementById('lesson-substitution').classList.add('hidden');
+                document.getElementById('lesson-elimination').classList.remove('hidden');
+                document.getElementById('btn-lesson-sub').className = 'sub-lesson-btn bg-emerald-900 text-emerald-200 font-game px-6 py-3 rounded-2xl text-base md:text-lg font-extrabold shadow-lg hover:bg-emerald-800 transition';
+                document.getElementById('btn-lesson-elim').className = 'sub-lesson-btn bg-yellow-400 text-emerald-950 font-game px-6 py-3 rounded-2xl text-base md:text-lg font-extrabold shadow-lg hover:bg-yellow-300 transition';
+            }
+        }
+
+        function checkCheckpoint(chkNum, expected, btn) {
+            let feedbackEl = document.getElementById(`chk${chkNum}Feedback`);
+            if (!feedbackEl) return;
+            feedbackEl.classList.remove('hidden');
+
+            if (chkNum === 1) {
+                if (expected === 4) {
+                    playSound('correct');
+                    addSun(25);
+                    feedbackEl.className = 'mt-4 p-4 rounded-2xl text-base font-bold text-center bg-emerald-400 text-emerald-950 border border-emerald-600';
+                    feedbackEl.innerHTML = '🎉 EXCELLENT! Substituting $y = 2x$ into $x + y = 12$ gives $x + 2x = 12 \\implies 3x = 12 \\implies x = 4$! (+25 Sun ☀️)';
+                } else {
+                    playSound('wrong');
+                    feedbackEl.className = 'mt-4 p-4 rounded-2xl text-base font-bold text-center bg-red-400 text-red-950 border border-red-600';
+                    feedbackEl.innerHTML = '❌ Try again! Replace $y$ with $2x$ in $x + y = 12$!';
+                }
+            } else if (chkNum === 2) {
+                if (expected === '4x=16') {
+                    playSound('correct');
+                    addSun(25);
+                    feedbackEl.className = 'mt-4 p-4 rounded-2xl text-base font-bold text-center bg-purple-300 text-purple-950 border border-purple-500';
+                    feedbackEl.innerHTML = '⚔️ AWESOME! $(2x + 2x) + (y - y) = 10 + 6 \\implies 4x = 16$! (+25 Sun ☀️)';
+                } else {
+                    playSound('wrong');
+                    feedbackEl.className = 'mt-4 p-4 rounded-2xl text-base font-bold text-center bg-red-400 text-red-950 border border-red-600';
+                    feedbackEl.innerHTML = '❌ Incorrect! Adding $+y$ and $-y$ cancels out $y$ completely!';
+                }
+            }
+            initKaTeX();
+        }
+
+        function addSun(amount) {
+            state.sun += amount;
+            document.getElementById('globalSunCount').textContent = state.sun;
+            playSound('sun');
+        }
+
+        function loadSampleProblem(type) {
+            playSound('pop');
+            if (type === 'mango') {
+                document.getElementById('eq1_a').value = 2;
+                document.getElementById('eq1_b').value = 1;
+                document.getElementById('eq1_c').value = 120;
+                document.getElementById('eq2_a').value = 1;
+                document.getElementById('eq2_b').value = 1;
+                document.getElementById('eq2_c').value = 80;
+            } else if (type === 'jeepney') {
+                document.getElementById('eq1_a').value = 1;
+                document.getElementById('eq1_b').value = 1;
+                document.getElementById('eq1_c').value = 15;
+                document.getElementById('eq2_a').value = 12;
+                document.getElementById('eq2_b').value = 10;
+                document.getElementById('eq2_c').value = 160;
+            } else if (type === 'plants') {
+                document.getElementById('eq1_a').value = 3;
+                document.getElementById('eq1_b').value = 1;
+                document.getElementById('eq1_c').value = 175;
+                document.getElementById('eq2_a').value = 1;
+                document.getElementById('eq2_b').value = 2;
+                document.getElementById('eq2_c').value = 125;
+            }
+            generateLabSteps();
+        }
+
+        function generateLabSteps() {
+            playSound('pop');
+            const a1 = parseFloat(document.getElementById('eq1_a').value) || 0;
+            const b1 = parseFloat(document.getElementById('eq1_b').value) || 0;
+            const c1 = parseFloat(document.getElementById('eq1_c').value) || 0;
+            const a2 = parseFloat(document.getElementById('eq2_a').value) || 0;
+            const b2 = parseFloat(document.getElementById('eq2_b').value) || 0;
+            const c2 = parseFloat(document.getElementById('eq2_c').value) || 0;
+
+            const method = document.getElementById('labMethodSelect').value;
+            const out = document.getElementById('labSolutionOutput');
+
+            const D = a1 * b2 - a2 * b1;
+
+            if (D === 0) {
+                out.innerHTML = `
+                    <div class="bg-red-100 border-l-4 border-red-500 p-6 text-red-900 rounded-r-2xl w-full text-base">
+                        <p class="font-bold text-lg">⚠️ No Unique Solution!</p>
+                        <p>The determinant ($a_1 b_2 - a_2 b_1$) is 0. Lines are either parallel (no solution) or coincident (infinite solutions).</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const xSol = (c1 * b2 - c2 * b1) / D;
+            const ySol = (a1 * c2 - a2 * c1) / D;
+
+            document.getElementById('labStatusBadge').textContent = 'Solved Successfully';
+            document.getElementById('labStatusBadge').className = 'text-sm bg-emerald-100 text-emerald-800 font-sans font-semibold px-3 py-1 rounded-full';
+
+            let stepsHTML = '';
+
+            if (method === 'substitution') {
+                stepsHTML = `
+                    <div class="space-y-4 w-full text-slate-800 text-base">
+                        <div class="p-4 bg-slate-50 border rounded-2xl">
+                            <span class="font-game text-emerald-800 text-sm font-bold block">STEP 1: Express one variable</span>
+                            <p class="font-mono text-base mt-1">From Eq 1: $y = \\frac{${c1} - ${a1}x}{${b1}}$</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 border rounded-2xl">
+                            <span class="font-game text-emerald-800 text-sm font-bold block">STEP 2: Substitute into Eq 2</span>
+                            <p class="font-mono text-base mt-1">$${a2}x + ${b2}\\left(\\frac{${c1} - ${a1}x}{${b1}}\\right) = ${c2}$</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 border rounded-2xl">
+                            <span class="font-game text-emerald-800 text-sm font-bold block">STEP 3: Solve for X</span>
+                            <p class="font-mono text-lg font-bold text-emerald-700 mt-1">$x = ${xSol.toFixed(2).replace('.00', '')}$</p>
+                        </div>
+                        <div class="p-4 bg-emerald-100 border border-emerald-400 rounded-2xl">
+                            <span class="font-game text-emerald-950 text-sm font-bold block">FINAL SOLUTION PAIR</span>
+                            <p class="font-mono text-xl font-bold text-emerald-900 mt-1">$(x, y) = (${xSol.toFixed(2).replace('.00', '')}, ${ySol.toFixed(2).replace('.00', '')})$</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                stepsHTML = `
+                    <div class="space-y-4 w-full text-slate-800 text-base">
+                        <div class="p-4 bg-slate-50 border rounded-2xl">
+                            <span class="font-game text-purple-900 text-sm font-bold block">STEP 1: Scale equations to align coefficients</span>
+                            <p class="font-mono text-base mt-1">Multiply Eq 1 by ${b2} $\\implies ${a1 * b2}x + ${b1 * b2}y = ${c1 * b2}$</p>
+                            <p class="font-mono text-base mt-1">Multiply Eq 2 by ${b1} $\\implies ${a2 * b1}x + ${b1 * b2}y = ${c2 * b1}$</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 border rounded-2xl">
+                            <span class="font-game text-purple-900 text-sm font-bold block">STEP 2: Subtract equations to eliminate Y</span>
+                            <p class="font-mono text-base mt-1">$(${a1 * b2 - a2 * b1})x = ${c1 * b2 - c2 * b1}$</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 border rounded-2xl">
+                            <span class="font-game text-purple-900 text-sm font-bold block">STEP 3: Solve for X & back-substitute</span>
+                            <p class="font-mono text-lg font-bold text-purple-800 mt-1">$x = ${xSol.toFixed(2).replace('.00', '')}, y = ${ySol.toFixed(2).replace('.00', '')}$</p>
+                        </div>
+                        <div class="p-4 bg-purple-100 border border-purple-400 rounded-2xl">
+                            <span class="font-game text-purple-950 text-sm font-bold block">FINAL SOLUTION PAIR</span>
+                            <p class="font-mono text-xl font-bold text-purple-900 mt-1">$(x, y) = (${xSol.toFixed(2).replace('.00', '')}, ${ySol.toFixed(2).replace('.00', '')})$</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            out.innerHTML = stepsHTML;
+            initKaTeX();
+        }
+
+        const quizQuestions = [
+            {
+                q: "Which algebraic method involves solving for one variable first and substituting it into the second equation?",
+                options: ["A) Substitution Method", "B) Elimination Method", "C) Graphical Method", "D) Matrix Method"],
+                ans: 0,
+                explain: "The Substitution Method isolates one variable and replaces it in the second equation."
+            },
+            {
+                q: "Given $y = 3x$ and $x + y = 16$, what is the value of $x$?",
+                options: ["A) $x = 2$", "B) $x = 4$", "C) $x = 8$", "D) $x = 12$"],
+                ans: 1,
+                explain: "$x + 3x = 16 \\implies 4x = 16 \\implies x = 4$."
+            },
+            {
+                q: "When using the Elimination Method, what should you do if coefficients of a variable are exact opposites (e.g. $+3y$ and $-3y$)?",
+                options: ["A) Multiply by 0", "B) Add the equations together", "C) Subtract the equations", "D) Divide by $x$"],
+                ans: 1,
+                explain: "Adding opposite coefficients cancels out that variable ($3y + (-3y) = 0$)."
+            },
+            {
+                q: "If a system of linear equations has NO solution, how do the two lines look on a coordinate plane?",
+                options: ["A) They intersect at one point", "B) They are parallel lines", "C) They are the exact same line", "D) They form a triangle"],
+                ans: 1,
+                explain: "Parallel lines have equal slopes but different y-intercepts, so they never meet."
+            },
+            {
+                q: "What is the solution pair $(x, y)$ for $x + y = 7$ and $x - y = 3$?",
+                options: ["A) $(5, 2)$", "B) $(4, 3)$", "C) $(6, 1)$", "D) $(2, 5)$"],
+                ans: 0,
+                explain: "Adding equations: $2x = 10 \\implies x = 5$. Back-substituting: $5 + y = 7 \\implies y = 2$."
+            }
+        ];
+
+        function renderQuizQuestion() {
+            const container = document.getElementById('quizContainer');
+            if (!container) return;
+
+            if (state.quizIndex >= quizQuestions.length) {
+                container.innerHTML = `
+                    <div class="text-center space-y-4 py-8">
+                        <span class="text-6xl">🏆</span>
+                        <h3 class="font-game text-3xl text-emerald-900">Quiz Completed!</h3>
+                        <p class="text-xl text-slate-700">You scored <b>${state.quizScore} / ${quizQuestions.length}</b>!</p>
+                        <button onclick="resetQuiz()" class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-game text-xl px-8 py-4 rounded-2xl font-extrabold shadow-lg">
+                            Restart Quiz
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const q = quizQuestions[state.quizIndex];
+            let optsHTML = q.options.map((opt, idx) => `
+                <button onclick="submitQuizAnswer(${idx})" class="w-full text-left p-4 rounded-2xl border-2 border-slate-300 hover:border-cyan-600 hover:bg-cyan-50 font-game text-lg text-slate-800 transition">
+                    ${opt}
+                </button>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="flex justify-between items-center border-b pb-4">
+                    <span class="font-game text-xl text-cyan-900 font-bold">Question ${state.quizIndex + 1} of ${quizQuestions.length}</span>
+                    <span class="bg-cyan-100 text-cyan-900 font-game text-sm font-bold px-3 py-1 rounded-full">+50 Sun reward</span>
+                </div>
+                <h3 class="font-game text-2xl text-slate-900 leading-snug">${q.q}</h3>
+                <div class="space-y-3 pt-2">${optsHTML}</div>
+                <div id="quizFeedback" class="hidden p-4 rounded-2xl text-base font-bold text-center"></div>
+            `;
+
+            initKaTeX();
+        }
+
+        function submitQuizAnswer(selectedIdx) {
+            const q = quizQuestions[state.quizIndex];
+            const feedbackEl = document.getElementById('quizFeedback');
+            feedbackEl.classList.remove('hidden');
+
+            if (selectedIdx === q.ans) {
+                playSound('correct');
+                state.quizScore++;
+                addSun(50);
+                feedbackEl.className = 'p-4 rounded-2xl text-base font-bold text-center bg-emerald-300 text-emerald-950 border border-emerald-500';
+                feedbackEl.innerHTML = `🎉 CORRECT! ${q.explain} (+50 ☀️)`;
+            } else {
+                playSound('wrong');
+                feedbackEl.className = 'p-4 rounded-2xl text-base font-bold text-center bg-red-300 text-red-950 border border-red-500';
+                feedbackEl.innerHTML = `❌ INCORRECT! ${q.explain}`;
+            }
+
+            document.getElementById('quizScoreText').textContent = `${state.quizScore} / ${quizQuestions.length}`;
+
+            setTimeout(() => {
+                state.quizIndex++;
+                renderQuizQuestion();
+            }, 2000);
+        }
+
+        function resetQuiz() {
+            state.quizIndex = 0;
+            state.quizScore = 0;
+            document.getElementById('quizScoreText').textContent = `0 / ${quizQuestions.length}`;
+            renderQuizQuestion();
+        }
+
+        function switchGameMode(mode) {
+            playSound('pop');
+            state.currentGameSub = mode;
+
+            ['defense', 'grapher', 'match'].forEach(id => {
+                const el = document.getElementById(`subgame-${id}`);
+                const btn = document.getElementById(`subgame-btn-${id}`);
+                if (el) el.classList.add('hidden');
+                if (btn) btn.className = 'game-sub-tab bg-emerald-900 text-emerald-200 font-game px-6 py-3 rounded-2xl text-base font-extrabold shadow hover:bg-emerald-800 transition flex items-center gap-2';
+            });
+
+            const activeEl = document.getElementById(`subgame-${mode}`);
+            const activeBtn = document.getElementById(`subgame-btn-${mode}`);
+            if (activeEl) activeEl.classList.remove('hidden');
+            if (activeBtn) activeBtn.className = 'game-sub-tab bg-yellow-500 text-slate-950 font-game px-6 py-3 rounded-2xl text-base font-extrabold shadow transition flex items-center gap-2';
+
+            if (mode === 'grapher') initGrapherGame();
+            if (mode === 'match') initTacoMatchGame();
+        }
+
+        function initGrapherGame() {
+            const targetX = Math.floor(Math.random() * 5) + 1;
+            const targetY = Math.floor(Math.random() * 5) + 1;
+
+            state.grapherTargetX = targetX;
+            state.grapherTargetY = targetY;
+
+            const c1 = targetY - targetX;
+            const c2 = targetY + targetX;
+
+            document.getElementById('grapherEq1').innerHTML = `Line 1: $y = x ${c1 >= 0 ? '+ ' + c1 : '- ' + Math.abs(c1)}$`;
+            document.getElementById('grapherEq2').innerHTML = `Line 2: $y = -x + ${c2}$`;
+
+            document.getElementById('grapherTargetX').value = 0;
+            document.getElementById('grapherTargetY').value = 0;
+            document.getElementById('grapherFeedback').className = 'hidden';
+
+            renderCoordinateGrid();
+            initKaTeX();
+        }
+
+        function renderCoordinateGrid() {
+            const grid = document.getElementById('coordinateGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            for (let y = 5; y >= 0; y--) {
+                for (let x = 0; x <= 5; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'flex items-center justify-center border border-slate-700/60 rounded-xl cursor-pointer text-xs font-mono transition hover:bg-yellow-500/40 relative';
+                    
+                    const isZombieTarget = (x === state.grapherTargetX && y === state.grapherTargetY);
+                    
+                    if (isZombieTarget) {
+                        cell.innerHTML = '<span class="text-2xl animate-bounce">🧟</span>';
+                        cell.className += ' bg-purple-900/60 border-purple-500';
+                    } else if (x === 0 && y === 0) {
+                        cell.innerHTML = '<span class="text-emerald-400 font-bold text-xs">(0,0)</span>';
+                    } else {
+                        cell.innerHTML = `<span class="text-slate-500 text-[10px]">${x},${y}</span>`;
+                    }
+
+                    cell.onclick = () => {
+                        playSound('pop');
+                        document.getElementById('grapherTargetX').value = x;
+                        document.getElementById('grapherTargetY').value = y;
+                    };
+
+                    grid.appendChild(cell);
+                }
+            }
+        }
+
+        function fireGrapherLaser() {
+            const userX = parseInt(document.getElementById('grapherTargetX').value);
+            const userY = parseInt(document.getElementById('grapherTargetY').value);
+
+            const feedback = document.getElementById('grapherFeedback');
+            feedback.classList.remove('hidden');
+
+            if (userX === state.grapherTargetX && userY === state.grapherTargetY) {
+                playSound('correct');
+                addSun(50);
+                state.solvedCount++;
+                feedback.className = 'p-4 rounded-2xl text-center text-sm font-bold bg-emerald-400 text-emerald-950 border border-emerald-600 shadow-lg';
+                feedback.innerHTML = `🎯 DIRECT HIT! The lines intersect at (${userX}, ${userY})! Zombie Blasted! (+50 ☀️)`;
+                
+                setTimeout(() => {
+                    initGrapherGame();
+                }, 1800);
+            } else {
+                playSound('wrong');
+                feedback.className = 'p-4 rounded-2xl text-center text-sm font-bold bg-red-500 text-white border border-red-700';
+                feedback.innerHTML = `❌ MISSED! (${userX}, ${userY}) is not the intersection point. Try again!`;
+            }
+        }
+
+        const tacoMatchPairs = [
+            { id: 1, type: 'system', text: '$x + y = 6$<br>$x - y = 2$', pairId: 1 },
+            { id: 2, type: 'solution', text: 'Solution:<br>$(4, 2)$', pairId: 1 },
+            { id: 3, type: 'system', text: '$y = 2x$<br>$x + y = 9$', pairId: 2 },
+            { id: 4, type: 'solution', text: 'Solution:<br>$(3, 6)$', pairId: 2 },
+            { id: 5, type: 'system', text: '$2x + y = 10$<br>$y = 2$', pairId: 3 },
+            { id: 6, type: 'solution', text: 'Solution:<br>$(4, 2)$', pairId: 3 },
+            { id: 7, type: 'system', text: '$x + y = 10$<br>$x - y = 0$', pairId: 4 },
+            { id: 8, type: 'solution', text: 'Solution:<br>$(5, 5)$', pairId: 4 }
+        ];
+
+        function initTacoMatchGame() {
+            state.flippedCards = [];
+            state.tacoCards = [...tacoMatchPairs].sort(() => Math.random() - 0.5);
+
+            const grid = document.getElementById('tacoGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            state.tacoCards.forEach((card, index) => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'taco-card bg-amber-900 border-2 border-amber-600 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer min-h-[120px] shadow-lg transition transform hover:scale-105';
+                cardEl.dataset.index = index;
+                cardEl.innerHTML = `<span class="text-4xl">🌮</span><span class="font-game text-xs text-amber-200 mt-2">Tap to Flip</span>`;
+                cardEl.onclick = () => handleTacoCardClick(card, cardEl, index);
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function handleTacoCardClick(card, cardEl, index) {
+            if (state.flippedCards.length >= 2) return;
+            if (cardEl.classList.contains('matched') || cardEl.classList.contains('flipped')) return;
+
+            playSound('pop');
+            cardEl.classList.add('flipped', 'bg-amber-100', 'text-amber-950');
+            cardEl.classList.remove('bg-amber-900', 'text-white');
+            cardEl.innerHTML = `<div class="font-mono text-sm font-bold">${card.text}</div>`;
+            initKaTeX();
+
+            state.flippedCards.push({ card, cardEl, index });
+
+            if (state.flippedCards.length === 2) {
+                const [c1, c2] = state.flippedCards;
+
+                if (c1.card.pairId === c2.card.pairId && c1.card.id !== c2.card.id) {
+                    playSound('correct');
+                    state.tacosCollected++;
+                    document.getElementById('tacoCount').textContent = state.tacosCollected;
+                    addSun(25);
+
+                    c1.cardEl.classList.add('matched', 'border-emerald-500', 'bg-emerald-100');
+                    c2.cardEl.classList.add('matched', 'border-emerald-500', 'bg-emerald-100');
+                    state.flippedCards = [];
+                } else {
+                    playSound('wrong');
+                    setTimeout(() => {
+                        [c1, c2].forEach(item => {
+                            item.cardEl.classList.remove('flipped', 'bg-amber-100', 'text-amber-950');
+                            item.cardEl.classList.add('bg-amber-900');
+                            item.cardEl.innerHTML = `<span class="text-4xl">🌮</span><span class="font-game text-xs text-amber-200 mt-2">Tap to Flip</span>`;
+                        });
+                        state.flippedCards = [];
+                    }, 1200);
+                }
+            }
+        }
+
+        const lawnGridEl = document.getElementById('lawnGrid');
+        let zombiesList = [];
+        let plantsGrid = Array(5).fill(null).map(() => Array(6).fill(null));
+
+        function initLawnGrid() {
+            if (!lawnGridEl) return;
+            lawnGridEl.innerHTML = '';
+            for (let r = 0; r < 5; r++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'grid grid-cols-6 gap-2 h-full relative';
+                rowDiv.dataset.row = r;
+
+                for (let c = 0; c < 6; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'lawn-cell border border-emerald-700/50 rounded-xl flex items-center justify-center cursor-pointer hover:bg-white/10 transition relative';
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    cell.onclick = () => handleLawnCellClick(r, c);
+                    rowDiv.appendChild(cell);
+                }
+                lawnGridEl.appendChild(rowDiv);
+            }
+        }
+
+        function selectPlantCard(type) {
+            playSound('pop');
+            state.activePlantCard = type;
+            document.querySelectorAll('.plant-card').forEach(el => el.classList.remove('ring-4', 'ring-yellow-400'));
+            const cardEl = document.getElementById(`card-${type}`);
+            if (cardEl) cardEl.classList.add('ring-4', 'ring-yellow-400');
+        }
+
+        function handleLawnCellClick(r, c) {
+            if (plantsGrid[r][c] !== null) return;
+
+            const plantCosts = { peashooter: 50, sunflower: 25, cherry: 100, wallnut: 75, snowpea: 75 };
+            const cost = plantCosts[state.activePlantCard] || 50;
+
+            if (state.sun < cost) {
+                playSound('wrong');
+                return;
+            }
+
+            state.sun -= cost;
+            document.getElementById('globalSunCount').textContent = state.sun;
+            playSound('sun');
+
+            plantsGrid[r][c] = { type: state.activePlantCard, row: r, col: c };
+            renderLawnPlants();
+        }
+
+        function renderLawnPlants() {
+            document.querySelectorAll('.lawn-cell').forEach(cell => {
+                const r = parseInt(cell.dataset.row);
+                const c = parseInt(cell.dataset.col);
+                const plant = plantsGrid[r][c];
+
+                if (plant) {
+                    const icons = { peashooter: '🌱', sunflower: '🌻', cherry: '🍒', wallnut: '🥔', snowpea: '❄️' };
+                    cell.innerHTML = `<span class="text-4xl animate-bounce">${icons[plant.type] || '🌱'}</span>`;
+                } else {
+                    cell.innerHTML = '';
+                }
+            });
+        }
+
+        function startWave() {
+            playSound('pop');
+            initLawnGrid();
+            zombiesList = [];
+            state.gameActive = true;
+            state.zombiesRemaining = 5;
+            document.getElementById('zombiesLeftText').textContent = state.zombiesRemaining;
+
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    spawnZombie(i);
+                }, i * 2500);
+            }
+        }
+
+        function spawnZombie(laneRow) {
+            const zombieData = {
+                id: Date.now() + Math.random(),
+                row: laneRow,
+                col: 5,
+                type: laneRow % 2 === 0 ? 'Normal Zombie' : 'Conehead Zombie',
+                icon: laneRow % 2 === 0 ? '🧟' : '🧟‍♂️',
+                system: generateZombieSystem()
+            };
+
+            zombiesList.push(zombieData);
+            renderZombies();
+        }
+
+        function generateZombieSystem() {
+            const x = Math.floor(Math.random() * 6) + 1;
+            const y = Math.floor(Math.random() * 6) + 1;
+
+            return {
+                eq1: `$x + y = ${x + y}$`,
+                eq2: `$x - y = ${x - y}$`,
+                solX: x,
+                solY: y,
+                hint: "Add both equations together to cancel out $y$!"
+            };
+        }
+
+        function renderZombies() {
+            document.querySelectorAll('.zombie-token').forEach(el => el.remove());
+
+            zombiesList.forEach(z => {
+                const rowEl = lawnGridEl.children[z.row];
+                if (!rowEl) return;
+                const cellEl = rowEl.children[z.col];
+                if (!cellEl) return;
+
+                const zDiv = document.createElement('div');
+                zDiv.className = 'zombie-token absolute inset-0 flex flex-col items-center justify-center z-20 cursor-pointer zombie-wobble';
+                zDiv.onclick = (e) => {
+                    e.stopPropagation();
+                    openMathBattle(z);
+                };
+                zDiv.innerHTML = `
+                    <span class="text-4xl md:text-5xl drop-shadow-md">${z.icon}</span>
+                    <span class="bg-red-900 text-yellow-300 font-pixel text-xs px-1.5 rounded border border-yellow-400">TARGET</span>
+                `;
+                cellEl.appendChild(zDiv);
+            });
+        }
+
+        function openMathBattle(zombie) {
+            playSound('pop');
+            state.activeBattleZombie = zombie;
+            document.getElementById('zombieModalTitle').textContent = `${zombie.type} Attacking!`;
+            document.getElementById('battleEq1').innerHTML = zombie.system.eq1;
+            document.getElementById('battleEq2').innerHTML = zombie.system.eq2;
+            document.getElementById('battleInputX').value = '';
+            document.getElementById('battleInputY').value = '';
+            document.getElementById('battleFeedback').className = 'hidden';
+            document.getElementById('battleHintText').textContent = zombie.system.hint;
+            document.getElementById('battleHintText').classList.add('hidden');
+
+            if (state.battleTimerInterval) clearInterval(state.battleTimerInterval);
+            state.battleTimeLeft = 30;
+            const timerEl = document.getElementById('battleTimer');
+            timerEl.textContent = `${state.battleTimeLeft}s`;
+
+            state.battleTimerInterval = setInterval(() => {
+                state.battleTimeLeft--;
+                timerEl.textContent = `${state.battleTimeLeft}s`;
+                if (state.battleTimeLeft <= 0) {
+                    clearInterval(state.battleTimerInterval);
+                    handleBattleTimeout();
+                }
+            }, 1000);
+
+            document.getElementById('mathBattleModal').classList.remove('hidden');
+            document.getElementById('battleInputX').focus();
+            initKaTeX();
+        }
+
+        function handleBattleTimeout() {
+            playSound('wrong');
+            state.streak = 0;
+            state.incorrectCount++;
+            document.getElementById('streakCounter').textContent = `Streak: 0`;
+
+            if (state.activeBattleZombie) {
+                state.activeBattleZombie.col = Math.max(0, state.activeBattleZombie.col - 1);
+            }
+
+            setTimeout(() => {
+                document.getElementById('mathBattleModal').classList.add('hidden');
+                renderZombies();
+            }, 1500);
+        }
+
+        function toggleBattleHint() {
+            playSound('pop');
+            document.getElementById('battleHintText').classList.toggle('hidden');
+        }
+
+        function submitBattleAnswer() {
+            if (state.battleTimerInterval) clearInterval(state.battleTimerInterval);
+
+            const userX = parseFloat(document.getElementById('battleInputX').value);
+            const userY = parseFloat(document.getElementById('battleInputY').value);
+            const z = state.activeBattleZombie;
+
+            const feedbackEl = document.getElementById('battleFeedback');
+            feedbackEl.classList.remove('hidden');
+
+            if (userX === z.system.solX && userY === z.system.solY) {
+                playSound('correct');
+                feedbackEl.className = 'p-3 rounded-2xl text-center font-bold text-sm bg-emerald-400 text-emerald-950 border border-emerald-600 shadow-lg';
+                feedbackEl.textContent = '🎯 CORRECT SYSTEM SOLUTION! TRIGGERING PLANT POWER ATTACK!';
+
+                state.solvedCount++;
+                state.streak++;
+                addSun(50);
+                document.getElementById('streakCounter').textContent = `Streak: ${state.streak}`;
+
+                setTimeout(() => {
+                    document.getElementById('mathBattleModal').classList.add('hidden');
+                    executePlantPowerAttack(z);
+                }, 800);
+            } else {
+                playSound('wrong');
+                state.streak = 0;
+                state.incorrectCount++;
+                document.getElementById('streakCounter').textContent = `Streak: 0`;
+                feedbackEl.className = 'p-3 rounded-2xl text-center font-bold text-sm bg-red-400 text-red-950 border border-red-600';
+                feedbackEl.textContent = `❌ INCORRECT! Correct solution was x=${z.system.solX}, y=${z.system.solY}. Zombie advances!`;
+                
+                z.col = Math.max(0, z.col - 1);
+
+                setTimeout(() => {
+                    document.getElementById('mathBattleModal').classList.add('hidden');
+                    renderZombies();
+                }, 1800);
+            }
+        }
+
+        function executePlantPowerAttack(zombie) {
+            const row = zombie.row;
+            const rowEl = lawnGridEl.children[row];
+            if (!rowEl) return;
+
+            zombiesList = zombiesList.filter(item => item.id !== zombie.id);
+            state.zombiesRemaining--;
+            document.getElementById('zombiesLeftText').textContent = state.zombiesRemaining;
+
+            renderZombies();
+
+            if (state.zombiesRemaining <= 0) {
+                state.wavesCleared++;
+                playSound('correct');
+            }
+        }
+
+        function updateTeacherReport() {
+            document.getElementById('repTotalSun').textContent = state.sun;
+            const total = state.solvedCount + state.incorrectCount;
+            const acc = total > 0 ? Math.round((state.solvedCount / total) * 100) : 100;
+            document.getElementById('repAccuracy').textContent = `${acc}%`;
+            document.getElementById('repSolvedCount').textContent = state.solvedCount;
+            document.getElementById('repWavesCleared').textContent = state.wavesCleared;
+
+            const today = new Date();
+            document.getElementById('certDate').textContent = today.toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+            if (document.getElementById('studentNameInput')) {
+                document.getElementById('studentNameInput').value = state.studentName;
+            }
+        }
+
+        window.onload = function() {
+            renderSubStep();
+            renderElimStep();
+            initLawnGrid();
+            selectPlantCard('peashooter');
+            generateLabSteps();
+            initKaTeX();
+        };
+    </script>
+</body>
+</html>
